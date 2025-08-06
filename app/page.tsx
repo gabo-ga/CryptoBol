@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, Activity, BarChart3, Eye } from "lucide-react"
 import ExchangeChart from "./components/exchange-chart"
 import AdSection from "./components/ad-section"
+import LiveComponent from "@/components/ui/liveComponent"
 
 interface PriceData {
   timestamp: number
@@ -114,12 +115,9 @@ export default function USDTBOBExchange() {
       <div className="relative max-w-7xl mx-auto px-4 py-6 space-y-8">
         {/* Compact Header */}
         <div className="text-center space-y-3 pt-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-            <Activity className="h-3 w-3 text-green-400" />
-            <span className="text-green-400 font-medium text-xs">LIVE</span>
-          </div>
+          <LiveComponent/>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
-            USDT/BOB Exchange
+            COTIZACIÓN USDT/BOB
           </h1>
         </div>
 
@@ -137,20 +135,18 @@ export default function USDTBOBExchange() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl animate-pulse"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/10 rounded-full blur-xl animate-pulse animation-delay-1000"></div>
 
-            <CardHeader className="text-center pb-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
+            <CardHeader className="text-center pb-3">
+              <div className="flex items-center justify-center gap-2 ">
                 <Eye className="h-5 w-5 text-cyan-400" />
-                <CardTitle className="text-xl text-white">Current Exchange Rate</CardTitle>
+                <CardTitle className="text-xl text-white">Tipo de cambio actual</CardTitle>
               </div>
-              <CardDescription className="text-blue-200 text-lg">1 USDT equals</CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-6 relative z-10">
               {/* MASSIVE PRICE */}
               <div className="space-y-2">
-                <div className="text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-300 via-white to-blue-300 bg-clip-text text-transparent leading-none animate-pulse-slow">
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-cyan-300 via-white to-blue-300 bg-clip-text text-transparent leading-none animate-pulse-slow">
                   {currentPrice ? formatPrice(currentPrice) : "Loading..."}
                 </div>
-                <div className="text-blue-200 text-lg md:text-xl">Bolivianos</div>
               </div>
 
               {/* 24h Change - Prominent */}
