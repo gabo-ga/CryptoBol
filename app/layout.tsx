@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CryptoBol - Cotizaciones en vivo e Informacion relevante",
-  description: "Cotizacion en tiempo real de las diferentes cryptos para Bolivia",
+  description: "CryptoBol te ofrece cotizaciones en tiempo real de las diferentes cryptos para Bolivia asi como informacion relevante del mundo crypto.",
 };
 
 export default function RootLayout({
