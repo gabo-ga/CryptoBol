@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, BarChart3, Eye } from "lucide-react"
 import ExchangeChart from "./components/exchange-chart"
-import AdSection from "./components/ad-section"
+{/*import AdSection from "./components/ad-section"*/}
 import LiveComponent from "@/components/ui/liveComponent"
 import Header from "@/components/ui/header"
 import Footer from "@/components/ui/footer"
