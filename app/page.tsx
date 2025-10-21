@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Loader2, TrendingUp, TrendingDown, RefreshCw, Activity, BarChart3, Eye } from "lucide-react"
+import { Loader2, TrendingUp, TrendingDown, RefreshCw, BarChart3, Eye } from "lucide-react"
 import ExchangeChart from "./components/exchange-chart"
 import AdSection from "./components/ad-section"
 import LiveComponent from "@/components/ui/liveComponent"
