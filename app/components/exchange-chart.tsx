@@ -91,15 +91,20 @@ export default function ExchangeChart({ data }: ExchangeChartProps) {
                     }
                     return value
                   }}
-                  formatter={(value: number) => [
-                    new Intl.NumberFormat("es-BO", {
+                  formatter={(value) => {
+                    if (typeof value !== "number") {
+                      return [value, "Exchange Rate"]
+                    }
+
+                    const formattedValue = new Intl.NumberFormat("es-BO", {
                       style: "currency",
                       currency: "BOB",
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 4,
-                    }).format(value),
-                    "Exchange Rate",
-                  ]}
+                    }).format(value)
+
+                    return [formattedValue, "Exchange Rate"]
+                  }}
                 />
               }
             />
