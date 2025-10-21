@@ -10,6 +10,7 @@ import ExchangeChart from "./components/exchange-chart"
 import AdSection from "./components/ad-section"
 import LiveComponent from "@/components/ui/liveComponent"
 import Header from "@/components/ui/header"
+import Footer from "@/components/ui/footer"
 
 interface PriceData {
   timestamp: number
@@ -215,41 +216,13 @@ export default function USDTBOBExchange() {
           </Card>
         </div>
 
-        {/* First Ad Section - Moved down */}
-        <AdSection
-          title="Crypto Trading Platform"
-          description="Start trading cryptocurrencies with zero fees"
-          type="banner"
-        />
-
-        {/* Additional Stats - Smaller, less prominent */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4">
-          <Card className="bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 transition-all duration-300">
-            <CardContent className="p-4 text-center">
-              <div className="text-cyan-400 text-sm font-medium">Data Source</div>
-              <div className="text-white text-lg font-bold">Binance API</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 transition-all duration-300">
-            <CardContent className="p-4 text-center">
-              <div className="text-blue-400 text-sm font-medium">Update Frequency</div>
-              <div className="text-white text-lg font-bold">30 Seconds</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 transition-all duration-300">
-            <CardContent className="p-4 text-center">
-              <div className="text-indigo-400 text-sm font-medium">Market Status</div>
-              <div className="text-green-400 text-lg font-bold">Active</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Second Ad Section */}
+        {/* Second Ad Section
         <AdSection
           title="Crypto Wallet & Exchange"
           description="Secure wallet with instant USDT/BOB conversion"
           type="card"
         />
+        */}
 
         {/* Info Section - Moved to bottom */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4">
@@ -289,9 +262,7 @@ export default function USDTBOBExchange() {
         </div>
 
         {/* Footer */}
-        <div className="text-center py-4 px-4">
-          <p className="text-blue-300 text-sm">© 2024 USDT/BOB Exchange Tracker</p>
-        </div>
+        <Footer />
       </div>
     </div>
   )
