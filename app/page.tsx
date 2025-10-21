@@ -9,6 +9,7 @@ import { Loader2, TrendingUp, TrendingDown, RefreshCw, Activity, BarChart3, Eye 
 import ExchangeChart from "./components/exchange-chart"
 import AdSection from "./components/ad-section"
 import LiveComponent from "@/components/ui/liveComponent"
+import Header from "@/components/ui/header"
 
 interface PriceData {
   timestamp: number
@@ -115,7 +116,8 @@ export default function USDTBOBExchange() {
       <div className="relative max-w-7xl mx-auto px-4 py-6 space-y-8">
         {/* Compact Header */}
         <div className="text-center space-y-3 pt-2">
-          <LiveComponent/>
+          <Header />
+          <LiveComponent />
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
             COTIZACIÓN USDT/BOB
           </h1>
