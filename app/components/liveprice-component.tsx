@@ -3,12 +3,9 @@ import { Button } from "@/app/components/ui/button"
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, Eye } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { useState, useEffect, useCallback } from "react"
+import { PriceData } from "@/types/types"
 
-interface PriceData {
-  timestamp: number
-  price: number
-  change24h: number
-}
+
 
 interface LivePriceComponentProps {
   onDataPoint?: (dataPoint: PriceData) => void
