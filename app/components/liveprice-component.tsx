@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/app/components/ui/button"
+import { formatChange, formatPrice } from "@/helpers/helpers"
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, Eye } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { useState, useEffect, useCallback } from "react"
@@ -67,19 +68,6 @@ export default function LivePriceComponent({
     return () => clearInterval(interval)
   }, [fetchPriceData])
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-BO", {
-      style: "currency",
-      currency: "BOB",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    }).format(price)
-  }
-
-  const formatChange = (change: number) => {
-    const sign = change >= 0 ? "+" : ""
-    return `${sign}${change.toFixed(2)}%`
-  }
 
   return (
     <>
