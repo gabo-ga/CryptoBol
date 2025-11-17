@@ -29,8 +29,7 @@ export default function LivePriceComponent({
     setLoading(true)
 
     try {
-      const response = await fetch("/api")
-
+      const response = await fetch("/api/p2p-price")
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -63,7 +62,7 @@ export default function LivePriceComponent({
 
   useEffect(() => {
     fetchPriceData()
-    const interval = setInterval(fetchPriceData, 30000)
+    const interval = setInterval(fetchPriceData, 80000)
     return () => clearInterval(interval)
   }, [fetchPriceData])
 

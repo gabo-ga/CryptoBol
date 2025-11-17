@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { getMongoCollection } from "@/lib/mongodb"
 import type { Document, WithId } from "mongodb"
 
-const BINANCE_P2P_API_URL = process.env.BINANCE_P2P_API_URL ?? "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
+const BINANCE_P2P_API_URL ="https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
 
 type ExchangeRateDoc = Document & {
   date: Date
@@ -16,6 +16,7 @@ type ExchangeHistoryEntry = {
   priceBob: number
   tradeType: string
 }
+
 
 async function fetchBinanceP2PRate() {
   const binanceP2PResponse = await fetch(BINANCE_P2P_API_URL, {
@@ -33,7 +34,7 @@ async function fetchBinanceP2PRate() {
       payTypes: [],
       publisherType: null,
     }),
-    next: { revalidate: 30 },
+    next: { revalidate: 60 },
   })
 
   if (!binanceP2PResponse.ok) {
@@ -48,7 +49,6 @@ async function fetchBinanceP2PRate() {
 
   const [{ adv, advertiser }] = p2pData.data
   const price = Number.parseFloat(adv.price)
-
   return {
     price: Number.parseFloat(price.toFixed(2)),
     tradeType: adv?.tradeType ?? "UNKNOWN",
