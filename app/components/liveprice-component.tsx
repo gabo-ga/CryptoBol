@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/app/components/ui/button"
 import { formatChange, formatPrice } from "@/helpers/helpers"
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, Eye } from "lucide-react"
@@ -30,7 +29,7 @@ export default function LivePriceComponent({
     setLoading(true)
 
     try {
-      const response = await fetch("/api/exchange-rate")
+      const response = await fetch("/api")
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
