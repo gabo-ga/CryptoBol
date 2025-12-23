@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app
 import { Alert, AlertDescription } from "@/app/components/ui/alert"
 import { Loader2, BarChart3 } from "lucide-react"
 import ExchangeChart from "./components/exchange-chart"
-import AdSection from "./components/ad-section"
+/*{import AdSection from "./components/ad-section"}*/
 import LiveComponent from "@/app/components/ui/liveComponent"
 import Header from "@/app/components/ui/header"
 import Footer from "@/app/components/ui/footer"
