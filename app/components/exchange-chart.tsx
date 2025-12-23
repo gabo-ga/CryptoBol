@@ -1,7 +1,7 @@
 "use client"
 
 import { XAxis, YAxis, ResponsiveContainer, Area, AreaChart, ReferenceLine } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/app/components/ui/chart"
 
 interface PriceData {
   timestamp: number
