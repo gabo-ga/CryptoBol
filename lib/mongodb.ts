@@ -1,32 +1,40 @@
 import { MongoClient, type Document } from "mongodb"
 
 const uri = process.env.MONGODB_URI
-
-if (!uri) {
-  throw new Error("Missing MONGODB_URI environment variable")
-}
-
 const options = {}
 
 declare global {
+  // Allow reuse of the client during hot reloads in dev
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
-let clientPromise: Promise<MongoClient>
+let clientPromise: Promise<MongoClient> | null = null
 
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    const client = new MongoClient(uri, options)
-    global._mongoClientPromise = client.connect()
+export const isMongoConfigured = Boolean(uri)
+
+function initClientPromise() {
+  if (!uri) {
+    throw new Error("Missing MONGODB_URI environment variable")
   }
-  clientPromise = global._mongoClientPromise
-} else {
-  const client = new MongoClient(uri, options)
-  clientPromise = client.connect()
+
+  if (clientPromise) return clientPromise
+
+  if (process.env.NODE_ENV === "development") {
+    if (!global._mongoClientPromise) {
+      const client = new MongoClient(uri, options)
+      global._mongoClientPromise = client.connect()
+    }
+    clientPromise = global._mongoClientPromise
+  } else {
+    const client = new MongoClient(uri, options)
+    clientPromise = client.connect()
+  }
+
+  return clientPromise
 }
 
 export async function getMongoClient() {
-  return clientPromise
+  return initClientPromise()
 }
 
 export async function getMongoCollection<T extends Document = Document>(
@@ -36,5 +44,3 @@ export async function getMongoCollection<T extends Document = Document>(
   const client = await getMongoClient()
   return client.db(dbName).collection<T>(collectionName)
 }
-
-export default clientPromise

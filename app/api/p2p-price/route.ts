@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getMongoCollection } from "@/lib/mongodb"
+import { getMongoCollection, isMongoConfigured } from "@/lib/mongodb"
 import type { Document, WithId } from "mongodb"
 
 const BINANCE_P2P_API_URL ="https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
@@ -67,24 +67,26 @@ export async function GET() {
 
     let history: ExchangeHistoryEntry[] = []
 
-    try {
-      const collectionName = process.env.MONGODB_COLLECTION || "usdt_bob"
-      const dbName = process.env.MONGODB_DB || "cryptobol"
-      const collection = await getMongoCollection<ExchangeRateDoc>(collectionName, dbName)
-      await collection.insertOne(rateDocument)
-      const historyDocs: WithId<ExchangeRateDoc>[] = await collection
-        .find({})
-        .sort({ date: -1 })
-        .toArray()
+    if (isMongoConfigured) {
+      try {
+        const collectionName = process.env.MONGODB_COLLECTION || "usdt_bob"
+        const dbName = process.env.MONGODB_DB || "cryptobol"
+        const collection = await getMongoCollection<ExchangeRateDoc>(collectionName, dbName)
+        await collection.insertOne(rateDocument)
+        const historyDocs: WithId<ExchangeRateDoc>[] = await collection
+          .find({})
+          .sort({ date: -1 })
+          .toArray()
 
-      history = historyDocs.map((doc) => ({
-        id: doc._id.toString(),
-        date: doc.date instanceof Date ? doc.date.toISOString() : String(doc.date),
-        priceBob: doc.priceBob,
-        tradeType: doc.tradeType,
-      }))
-    } catch (dbError) {
-      console.error("Failed to persist exchange rate:", dbError)
+        history = historyDocs.map((doc) => ({
+          id: doc._id.toString(),
+          date: doc.date instanceof Date ? doc.date.toISOString() : String(doc.date),
+          priceBob: doc.priceBob,
+          tradeType: doc.tradeType,
+        }))
+      } catch (dbError) {
+        console.error("Failed to persist exchange rate:", dbError)
+      }
     }
 
     return NextResponse.json({
@@ -111,5 +113,4 @@ export async function GET() {
     })
   }
 }
-
 
