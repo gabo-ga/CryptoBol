@@ -36,8 +36,6 @@ export default function USDTBOBExchange() {
     }
   }, [])
 
-  const handleLoadingChange = useCallback((isLoading: boolean) => {
-  }, [])
 
 
   return (
