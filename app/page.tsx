@@ -36,6 +36,8 @@ export default function USDTBOBExchange() {
     }
   }, [])
 
+  /*const handleLoadingChange = useCallback((isLoading: boolean) => {
+  }, [])*/
 
 
   return (
@@ -72,7 +74,7 @@ export default function USDTBOBExchange() {
         <LivePriceComponent
           onDataPoint={handleDataPoint}
           onErrorChange={handleErrorChange}
-          onLoadingChange={handleLoadingChange}
+         // onLoadingChange={handleLoadingChange}
         />
 
         {/* HERO CHART - Immediately after price */}
