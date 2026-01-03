@@ -34,8 +34,8 @@ export function usePriceHistory({ limit = 200 }: UsePriceHistoryOptions = {}): U
         throw new Error("Malformed history response")
       }
 
-      const mappedHistory: PriceData[] = data.history
-        .map((item: { date: string; priceBob: number }) => ({
+      const mappedHistory: PriceData[] = (data.history as Array<{ date: string; priceBob: number }>)
+        .map((item) => ({
           timestamp: new Date(item.date).getTime(),
           price: item.priceBob,
           change24h: 0,
