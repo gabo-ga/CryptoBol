@@ -1,41 +1,29 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# USDT/BOB Tracker
 
-## Getting Started
+Next.js app that tracks the USDT/BOB rate, persists snapshots to MongoDB, and renders a live chart.
 
-First, run the development server:
+## Setup
+- Install deps: `npm install`
+- Set env vars in `.env.local`:
+  - `MONGODB_URI` (required for persistence)
+  - `MONGODB_DB` (optional, default `cryptobol`)
+  - `MONGODB_COLLECTION` (optional, default `usdt_bob`)
+- Dev server: `npm run dev` (http://localhost:3000)
+- Other scripts: `npm run build`, `npm run start`, `npm run lint`, `npm test`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## API
+- `GET /api/p2p-price`
+  - Pulls latest USDT/BOB rate from Binance P2P (BUY side) with a 15-minute revalidation window.
+  - Persists `{ date, priceBob, tradeType }` when Mongo is configured, skipping duplicates within 60s when price is unchanged.
+  - Response: `{ price, change24h, timestamp, source, merchantName, history[] }` with `history` limited to the most recent 200 records (ascending).
+- `GET /api/p2p-price/history?limit=200&since=2024-01-01T00:00:00Z`
+  - Returns stored snapshots sorted ascending.
+  - `limit` caps at 500; `since` filters by ISO date.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## UI flow
+- On load, `usePriceHistory` seeds the `ExchangeChart` with persisted history.
+- `useLivePrice` polls `/api/p2p-price` every 15 minutes for fresh ticks and appends them (deduped and capped) so the chart stays current.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# CryptoBol
-Repositorio oficial para la web cryptobol.com
->>>>>>> a0068dda380b43935f80ba722030aa85279c23a8
+## Testing
+- Jest + ts-jest are configured with `npm test`.
+- Coverage focuses on persistence helpers (`shouldPersistRate`, history mapping) and chart data merging. Running tests requires dev deps installed.

@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { Alert, AlertDescription } from "@/app/components/ui/alert"
 import { Loader2, BarChart3 } from "lucide-react"
@@ -11,27 +11,25 @@ import Footer from "@/app/components/ui/footer"
 import Disclaimer from "./components/disclaimer-component"
 import InformationComponent from "./components/information-component"
 import LivePriceComponent from "./components/liveprice-component"
-
-interface PriceData {
-  timestamp: number
-  price: number
-  change24h: number
-}
+import { usePriceHistory } from "@/app/hooks/use-price-history"
+import { mergePricePoints } from "@/helpers/price-history"
+import type { PriceData } from "@/types/types"
 
 export default function USDTBOBExchange() {
-  const [priceData, setPriceData] = useState<PriceData[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [livePoints, setLivePoints] = useState<PriceData[]>([])
+  const [liveError, setLiveError] = useState<string | null>(null)
+  const { history, loading: historyLoading, error: historyError } = usePriceHistory()
+
+  const priceData = useMemo(() => mergePricePoints(history, livePoints), [history, livePoints])
+  const error = liveError ?? historyError ?? null
 
   const handleDataPoint = useCallback((dataPoint: PriceData) => {
-    setPriceData((prev) => {
-      const updated = [...prev, dataPoint]
-      return updated.slice(-50)
-    })
-    setError(null)
+    setLivePoints((prev) => mergePricePoints(prev, [dataPoint]))
+    setLiveError(null)
   }, [])
 
   const handleErrorChange = useCallback((message: string | null) => {
-    setError(message)
+    setLiveError(message)
     if (message) {
     }
   }, [])
@@ -100,7 +98,9 @@ export default function USDTBOBExchange() {
                 <div className="h-[400px] md:h-[500px] flex items-center justify-center">
                   <div className="text-center space-y-4">
                     <Loader2 className="h-12 w-12 animate-spin mx-auto text-cyan-400" />
-                    <p className="text-blue-300 text-lg">Loading chart data...</p>
+                    <p className="text-blue-300 text-lg">
+                      {historyLoading ? "Loading price history..." : "Waiting for price data..."}
+                    </p>
                   </div>
                 </div>
               )}

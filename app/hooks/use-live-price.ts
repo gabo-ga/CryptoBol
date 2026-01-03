@@ -20,7 +20,7 @@ type UseLivePriceResult = {
 }
 
 export function useLivePrice({
-  pollMs = 80000,
+  pollMs = 900_000,
   onDataPoint,
   onErrorChange,
   onLoadingChange,
@@ -65,8 +65,10 @@ export function useLivePrice({
         throw new Error(data.error)
       }
 
+      const timestamp = typeof data.timestamp === "number" ? data.timestamp : Date.now()
+
       const newDataPoint: PriceData = {
-        timestamp: Date.now(),
+        timestamp,
         price: data.price,
         change24h: data.change24h,
       }
@@ -74,7 +76,7 @@ export function useLivePrice({
       onDataPoint?.(newDataPoint)
       setCurrentPrice(typeof data.price === "number" ? data.price : null)
       setChange24h(typeof data.change24h === "number" ? data.change24h : null)
-      setLastUpdate(new Date())
+      setLastUpdate(new Date(timestamp))
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch exchange rate"
       setError(message)

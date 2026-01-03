@@ -1,22 +1,10 @@
 import { NextResponse } from "next/server"
 import { getMongoCollection, isMongoConfigured } from "@/lib/mongodb"
-import type { Document, WithId } from "mongodb"
+import { COLLECTION_NAME, DB_NAME, HISTORY_LIMIT, mapHistoryDocuments, shouldPersistRate } from "@/app/api/p2p-price/shared"
+import type { ExchangeHistoryEntry, ExchangeRateDoc } from "@/app/api/p2p-price/shared"
+import type { WithId } from "mongodb"
 
-const BINANCE_P2P_API_URL ="https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
-
-type ExchangeRateDoc = Document & {
-  date: Date
-  priceBob: number
-  tradeType: string
-}
-
-type ExchangeHistoryEntry = {
-  id: string
-  date: string
-  priceBob: number
-  tradeType: string
-}
-
+const BINANCE_P2P_API_URL = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
 
 async function fetchBinanceP2PRate() {
   const binanceP2PResponse = await fetch(BINANCE_P2P_API_URL, {
@@ -34,7 +22,7 @@ async function fetchBinanceP2PRate() {
       payTypes: [],
       publisherType: null,
     }),
-    next: { revalidate: 60 },
+    next: { revalidate: 900 },
   })
 
   if (!binanceP2PResponse.ok) {
@@ -59,8 +47,9 @@ async function fetchBinanceP2PRate() {
 export async function GET() {
   try {
     const { price: usdtToBobRate, tradeType, merchantName } = await fetchBinanceP2PRate()
-    const rateDocument = {
-      date: new Date(),
+    const now = new Date()
+    const rateDocument: ExchangeRateDoc = {
+      date: now,
       priceBob: usdtToBobRate,
       tradeType,
     }
@@ -69,21 +58,19 @@ export async function GET() {
 
     if (isMongoConfigured) {
       try {
-        const collectionName = process.env.MONGODB_COLLECTION || "usdt_bob"
-        const dbName = process.env.MONGODB_DB || "cryptobol"
-        const collection = await getMongoCollection<ExchangeRateDoc>(collectionName, dbName)
-        await collection.insertOne(rateDocument)
+        const collection = await getMongoCollection<ExchangeRateDoc>(COLLECTION_NAME, DB_NAME)
+        const latestDoc = await collection.find({}).sort({ date: -1 }).limit(1).next()
+        if (shouldPersistRate(latestDoc ?? null, rateDocument)) {
+          await collection.insertOne(rateDocument)
+        }
+
         const historyDocs: WithId<ExchangeRateDoc>[] = await collection
           .find({})
           .sort({ date: -1 })
+          .limit(HISTORY_LIMIT)
           .toArray()
 
-        history = historyDocs.map((doc) => ({
-          id: doc._id.toString(),
-          date: doc.date instanceof Date ? doc.date.toISOString() : String(doc.date),
-          priceBob: doc.priceBob,
-          tradeType: doc.tradeType,
-        }))
+        history = mapHistoryDocuments(historyDocs).reverse()
       } catch (dbError) {
         console.error("Failed to persist exchange rate:", dbError)
       }
@@ -92,7 +79,7 @@ export async function GET() {
     return NextResponse.json({
       price: usdtToBobRate,
       change24h: 0, // P2P doesn't provide 24h change
-      timestamp: Date.now(),
+      timestamp: rateDocument.date.getTime(),
       source: "Binance P2P API (USDT/BOB)",
       merchantName,
       history,
@@ -113,4 +100,3 @@ export async function GET() {
     })
   }
 }
-
