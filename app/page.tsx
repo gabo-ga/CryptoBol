@@ -12,7 +12,6 @@ export default function USDTBOBExchange() {
       <Background />
 
       <div className="relative max-w-7xl mx-auto px-4 py-6 space-y-8">
-        {/* Compact Header */}
         <div className="text-center space-y-3 pt-2">
           <Header />
           <LiveComponent />
@@ -21,7 +20,6 @@ export default function USDTBOBExchange() {
           </h1>
         </div>
 
-        {/* Interactive Dashboard (client boundary) */}
         <DashboardClient />
 
         {/* Info Section - Moved to bottom */}
@@ -29,7 +27,6 @@ export default function USDTBOBExchange() {
           <InformationComponent/>
           <Disclaimer/>
         </div>
-        {/* Footer */}
         <Footer />
       </div>
     </div>
