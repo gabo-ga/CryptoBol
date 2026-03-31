@@ -98,15 +98,29 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching P2P exchange rate:", error)
 
-  
-    const baseRate = 6.96 // precio aproximado
+    let fallbackPrice = 6.96
+    let fallbackSource = "Hardcoded fallback (API and DB unavailable)"
+
+    try {
+      const collectionName = process.env.MONGODB_COLLECTION || "usdt_bob"
+      const dbName = process.env.MONGODB_DB || "cryptobol"
+      const collection = await getMongoCollection<ExchangeRateDoc>(collectionName, dbName)
+      const lastDoc = await collection.findOne({}, { sort: { date: -1 } })
+
+      if (lastDoc) {
+        fallbackPrice = lastDoc.priceBob
+        fallbackSource = "Last known price from database"
+      }
+    } catch (dbError) {
+      console.error("Failed to fetch fallback from DB:", dbError)
+    }
 
     return NextResponse.json({
-      price: baseRate,
+      price: fallbackPrice,
       change24h: 0,
       timestamp: Date.now(),
-      source: "Simulated data (API unavailable)",
-      warning: "Using simulated data due to API error",
+      source: fallbackSource,
+      warning: `Using fallback data: ${fallbackSource}`,
       history: [],
     })
   }
