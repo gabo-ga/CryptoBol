@@ -1,29 +1,56 @@
-# USDT/BOB Tracker
+# CryptoBol
 
-Next.js app that tracks the USDT/BOB rate, persists snapshots to MongoDB, and renders a live chart.
+Real-time USDT/BOB exchange rate tracker powered by Binance P2P data.
 
-## Setup
-- Install deps: `npm install`
-- Set env vars in `.env.local`:
-  - `MONGODB_URI` (required for persistence)
-  - `MONGODB_DB` (optional, default `cryptobol`)
-  - `MONGODB_COLLECTION` (optional, default `usdt_bob`)
-- Dev server: `npm run dev` (http://localhost:3000)
-- Other scripts: `npm run build`, `npm run start`, `npm run lint`, `npm test`
+## Tech Stack
 
-## API
-- `GET /api/p2p-price`
-  - Pulls latest USDT/BOB rate from Binance P2P (BUY side) with a 15-minute revalidation window.
-  - Persists `{ date, priceBob, tradeType }` when Mongo is configured, skipping duplicates within 60s when price is unchanged.
-  - Response: `{ price, change24h, timestamp, source, merchantName, history[] }` with `history` limited to the most recent 200 records (ascending).
-- `GET /api/p2p-price/history?limit=200&since=2024-01-01T00:00:00Z`
-  - Returns stored snapshots sorted ascending.
-  - `limit` caps at 500; `since` filters by ISO date.
+- **Framework:** Next.js 15 (App Router)
+- **UI:** React 19, Tailwind CSS v4, shadcn/ui
+- **Charts:** Recharts
+- **Database:** MongoDB
+- **Language:** TypeScript (strict mode)
 
-## UI flow
-- On load, `usePriceHistory` seeds the `ExchangeChart` with persisted history.
-- `useLivePrice` polls `/api/p2p-price` every 15 minutes for fresh ticks and appends them (deduped and capped) so the chart stays current.
+## Getting Started
 
-## Testing
-- Jest + ts-jest are configured with `npm test`.
-- Coverage focuses on persistence helpers (`shouldPersistRate`, history mapping) and chart data merging. Running tests requires dev deps installed.
+### Prerequisites
+
+- Node.js 18+
+- MongoDB instance (local or Atlas)
+
+### Setup
+
+```bash
+git clone <repo-url>
+cd usdtbob
+npm install
+```
+
+Create a `.env.local` file:
+
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>
+MONGODB_DB=cryptobol          # optional, defaults to "cryptobol"
+MONGODB_COLLECTION=usdt_bob   # optional, defaults to "usdt_bob"
+```
+
+### Development
+
+```bash
+npm run dev       # Start dev server (Turbopack) on http://localhost:3000
+npm run build     # Production build
+npm run start     # Serve production build
+npm run lint      # ESLint checks
+npm test          # Run Jest tests
+```
+
+## Project Structure
+
+```
+app/
+  api/p2p-price/    API route for Binance P2P data
+  components/       Feature components + ui/ primitives
+  hooks/            Custom React hooks
+helpers/            Formatting utilities
+lib/                MongoDB client, shared utils
+types/              TypeScript type definitions
+```

@@ -8,6 +8,7 @@ type UseLivePriceOptions = {
   onDataPoint?: (dataPoint: PriceData) => void
   onErrorChange?: (message: string | null) => void
   onLoadingChange?: (isLoading: boolean) => void
+  onWarningChange?: (warning: string | null) => void
 }
 
 type UseLivePriceResult = {
@@ -16,6 +17,7 @@ type UseLivePriceResult = {
   lastUpdate: Date | null
   loading: boolean
   error: string | null
+  warning: string | null
   refresh: () => Promise<void>
 }
 
@@ -24,12 +26,14 @@ export function useLivePrice({
   onDataPoint,
   onErrorChange,
   onLoadingChange,
+  onWarningChange,
 }: UseLivePriceOptions = {}): UseLivePriceResult {
   const [currentPrice, setCurrentPrice] = useState<number | null>(null)
   const [change24h, setChange24h] = useState<number | null>(null)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isFetchingRef = useRef(false)
@@ -65,7 +69,10 @@ export function useLivePrice({
         throw new Error(data.error)
       }
 
-      const timestamp = typeof data.timestamp === "number" ? data.timestamp : Date.now()
+      const timestamp = Date.now()
+      const newWarning = data.warning ?? null
+      setWarning(newWarning)
+      onWarningChange?.(newWarning)
 
       const newDataPoint: PriceData = {
         timestamp,
@@ -93,7 +100,7 @@ export function useLivePrice({
         timeoutRef.current = setTimeout(fetchPriceData, pollMs)
       }
     }
-  }, [clearScheduled, onDataPoint, onErrorChange, onLoadingChange, pollMs])
+  }, [clearScheduled, onDataPoint, onErrorChange, onLoadingChange, onWarningChange, pollMs])
 
   useEffect(() => {
     mountedRef.current = true
@@ -131,6 +138,7 @@ export function useLivePrice({
     lastUpdate,
     loading,
     error,
+    warning,
     refresh: fetchPriceData,
   }
 }

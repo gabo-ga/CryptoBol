@@ -10,6 +10,7 @@ import { PriceData } from "@/types/types"
 export default function DashboardClient() {
   const [priceData, setPriceData] = useState<PriceData[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
 
   const handleDataPoint = useCallback((dataPoint: PriceData) => {
     setPriceData((prev) => {
@@ -25,7 +26,12 @@ export default function DashboardClient() {
     }
   }, [])
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLoadingChange = useCallback((isLoading: boolean) => {
+  }, [])
+
+  const handleWarningChange = useCallback((warning: string | null) => {
+    setWarning(warning)
   }, [])
 
   return (
@@ -37,11 +43,19 @@ export default function DashboardClient() {
         </Alert>
       )}
 
+      {/* Warning Alert */}
+      {warning && !error && (
+        <Alert className="bg-yellow-500/10 border-yellow-500/20 backdrop-blur-md mx-4">
+          <AlertDescription className="text-yellow-300">{warning}</AlertDescription>
+        </Alert>
+      )}
+
       {/* HERO SECTION - MASSIVE PRICE DISPLAY */}
       <LivePriceComponent
         onDataPoint={handleDataPoint}
         onErrorChange={handleErrorChange}
         onLoadingChange={handleLoadingChange}
+        onWarningChange={handleWarningChange}
       />
 
       {/* HERO CHART - Immediately after price */}

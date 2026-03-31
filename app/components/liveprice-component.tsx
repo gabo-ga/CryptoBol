@@ -11,17 +11,20 @@ interface LivePriceComponentProps {
   onDataPoint?: (dataPoint: PriceData) => void
   onErrorChange?: (message: string | null) => void
   onLoadingChange?: (isLoading: boolean) => void
+  onWarningChange?: (warning: string | null) => void
 }
 
 export default function LivePriceComponent({
   onDataPoint,
   onErrorChange,
   onLoadingChange,
+  onWarningChange,
 }: LivePriceComponentProps) {
-  const { currentPrice, change24h, lastUpdate, loading, error, refresh } = useLivePrice({
+  const { currentPrice, change24h, lastUpdate, loading, error, warning, refresh } = useLivePrice({
     onDataPoint,
     onErrorChange,
     onLoadingChange,
+    onWarningChange,
   })
 
   const { changeClassName, changeIcon, changeLabel } = useMemo(() => {
@@ -78,6 +81,13 @@ export default function LivePriceComponent({
           <div className="flex items-start gap-2 rounded-md border border-red-400/50 bg-red-500/10 px-3 py-2 text-left text-sm text-red-100">
             <AlertTriangle className="h-4 w-4 mt-0.5" />
             <span>{error}</span>
+          </div>
+        ) : null}
+
+        {warning && !error ? (
+          <div className="flex items-start gap-2 rounded-md border border-yellow-400/50 bg-yellow-500/10 px-3 py-2 text-left text-sm text-yellow-100">
+            <AlertTriangle className="h-4 w-4 mt-0.5 text-yellow-400" />
+            <span>{warning}</span>
           </div>
         ) : null}
 
