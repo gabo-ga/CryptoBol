@@ -15,6 +15,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CryptoBol - Cotizaciones en vivo e Informacion relevante",
   description: "CryptoBol te ofrece cotizaciones en tiempo real de las diferentes cryptos para Bolivia asi como informacion relevante del mundo crypto.",
+  openGraph: {
+    images: ["/og-image.png"],
+    url: "https://cryptobol.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
+  },
+  alternates: {
+    canonical: "https://cryptobol.com",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
